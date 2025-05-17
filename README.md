@@ -4,14 +4,43 @@ A lightweight, portable web development stack for Windows with Apache, PHP, MySQ
 
 ## 🚀 Quick Start Guide
 
-### 1. Clone the Repository
+### Method 1: Automated Setup (Recommended)
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/techiemithlesh/mywebstack.git
+   cd mywebstack
+   ```
+
+2. Run the automated setup script (requires PowerShell):
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File setup.ps1
+   ```
+   
+   This script will:
+   - Create all necessary directories
+   - Download and extract Apache, PHP, MySQL, and phpMyAdmin
+   - Apply configuration templates
+   - Create required symlinks
+   - Prepare the environment for use
+
+3. Start the stack:
+   ```bash
+   start-stack.bat
+   ```
+
+4. Open your browser and navigate to [http://localhost](http://localhost)
+
+### Method 2: Manual Setup
+
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/techiemithlesh/mywebstack.git
 cd mywebstack
 ```
 
-### 2. Download Required Components
+#### 2. Download Required Components
 
 Download and extract the following components:
 
@@ -20,7 +49,7 @@ Download and extract the following components:
 - [MySQL ZIP Archive](https://dev.mysql.com/downloads/mysql/)
 - [(Optional) phpMyAdmin](https://www.phpmyadmin.net/downloads/)
 
-### 3. Setup Directory Structure
+#### 3. Setup Directory Structure
 
 Place the extracted components in the following directories:
 
@@ -32,11 +61,12 @@ mywebstack/
 ├── phpmyadmin/     # phpMyAdmin files (optional)
 ├── www/            # Your web projects go here
 ├── templates/      # Configuration templates
+├── setup.ps1       # Automated setup script
 ├── start-stack.bat # Script to start the stack
 └── stop-stack.bat  # Script to stop the stack
 ```
 
-### 4. Configure the Stack
+#### 4. Configure the Stack
 
 Copy and customize the configuration templates:
 
@@ -84,14 +114,14 @@ www/
 │   ├── .htaccess
 │   ├── index.php
 │   └── ...
-└── ...
+└── phpmyadmin/ (symlink to ../phpmyadmin created by setup.ps1)
 ```
 
 ## 🔧 Common Tasks
 
 ### Accessing phpMyAdmin
 
-If installed, phpMyAdmin is available at [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+phpMyAdmin is available at [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
 ### Creating a New Database
 
@@ -105,6 +135,27 @@ If installed, phpMyAdmin is available at [http://localhost/phpmyadmin](http://lo
 2. Copy the `.htaccess` file from `templates/` into your project folder
 3. Add your PHP files to the project folder
 4. Access your project at `http://localhost/your-project-folder`
+
+## 🛠️ About the Setup Script
+
+The `setup.ps1` PowerShell script automates the setup process with these features:
+
+- **Automatic Directory Creation**: Creates all necessary folders (apache, php, mysql, phpmyadmin, www, logs)
+- **Component Downloads**: Automatically downloads and extracts the latest compatible versions of:
+  - Apache 2.4.57 (VS17)
+  - PHP 7.4.33
+  - MySQL 8.0.36
+  - phpMyAdmin 5.2.1
+- **Configuration**: Copies template configuration files to their proper locations
+- **Symlink Creation**: Creates a symbolic link to phpMyAdmin in the www directory
+- **Smart Checks**: Only downloads components that aren't already present
+
+To run the script:
+```powershell
+powershell -ExecutionPolicy Bypass -File setup.ps1
+```
+
+> **Note**: You may need to run PowerShell as Administrator for symlink creation to work properly.
 
 ## 📝 Notes
 
