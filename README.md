@@ -4,7 +4,19 @@ A lightweight, portable web development stack for Windows with Apache, PHP, MySQ
 
 ## 🚀 Quick Start Guide
 
-### Method 1: Automated Setup (Recommended)
+### Method 1: Pre-bundled Release (Fastest)
+
+1. Download the [pre-bundled release package (v0.1.1)](https://github.com/techiemithlesh/mywebstack/releases/tag/v0.1.1)
+2. Extract the zip file to a location of C Drive
+3. Rename Folder to MyWebStack
+4. Run `start-stack.bat` to launch the stack
+5. Open your browser and navigate to [http://localhost](http://localhost)
+
+That's it! Everything is pre-configured and ready to use.
+
+### Method 2: Automated Setup
+
+If you prefer to build from source:
 
 1. Clone the repository:
    ```bash
@@ -31,7 +43,7 @@ A lightweight, portable web development stack for Windows with Apache, PHP, MySQ
 
 4. Open your browser and navigate to [http://localhost](http://localhost)
 
-### Method 2: Manual Setup
+### Method 3: Manual Setup
 
 #### 1. Clone the Repository
 
@@ -135,6 +147,22 @@ phpMyAdmin is available at [http://localhost/phpmyadmin](http://localhost/phpmya
 2. Copy the `.htaccess` file from `templates/` into your project folder
 3. Add your PHP files to the project folder
 4. Access your project at `http://localhost/your-project-folder`
+
+## 🧰 Features of Pre-bundled Release
+
+The [pre-bundled release](https://github.com/techiemithlesh/mywebstack/releases/tag/v0.1.1) comes with everything you need:
+
+- **Zero Configuration Required** - Just extract and run
+- **All Components Included**:
+  - Apache 2.4.57
+  - PHP 7.4.33
+  - MySQL 8.0.36
+  - phpMyAdmin 5.2.1
+- **Pre-configured Settings** - Optimized for development use
+- **Portable** - Can be moved to any location or USB drive
+- **Instant Web Development Environment** - No installation needed
+
+Simply download, extract, and start developing immediately!
 
 ## 🛠️ About the Setup Script
 
