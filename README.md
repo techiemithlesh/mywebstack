@@ -6,7 +6,7 @@ A lightweight, portable web development stack for Windows with Apache, PHP, MySQ
 
 ### Method 1: Pre-bundled Release (Fastest)
 
-1. Download the [pre-bundled release package (v0.1.1)]([https://github.com/techiemithlesh/mywebstack/releases/tag/v0.1.1](https://drive.usercontent.google.com/download?id=1h4IM7xBqtq-SrLYdu8ZhAxqefEhTQ7Sy&export=download))
+1. 📦 [Download v0.1.1 ZIP (328 MB)](https://drive.usercontent.google.com/download?id=1h4IM7xBqtq-SrLYdu8ZhAxqefEhTQ7Sy&export=download)
 2. Extract the zip file to a location of C Drive
 3. Rename Folder to MyWebStack
 4. Run `start-stack.bat` to launch the stack
