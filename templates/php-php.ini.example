@@ -1,0 +1,12 @@
+[PHP]
+extension_dir = "ext"
+display_errors = On
+error_reporting = E_ALL
+
+extension=mysqli
+extension=pdo_mysql
+extension=mbstring
+extension=curl
+extension=openssl
+extension=zip
+extension=intl
