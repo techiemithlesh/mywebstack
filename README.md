@@ -1,201 +1,201 @@
 # MyWebStack
 
-A lightweight, portable web development stack for Windows with Apache, PHP, MySQL, and phpMyAdmin.
+A lightweight, portable web development stack for Windows — Apache, PHP, MySQL, and phpMyAdmin in one folder. No installer, no admin rights, no hassle. A better alternative to XAMPP.
 
-## 🚀 Quick Start Guide
+[![Validate](https://github.com/techiemithlesh/mywebstack/actions/workflows/validate.yml/badge.svg)](https://github.com/techiemithlesh/mywebstack/actions/workflows/validate.yml)
+[![Latest Release](https://img.shields.io/github/v/release/techiemithlesh/mywebstack)](https://github.com/techiemithlesh/mywebstack/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+---
+
+## Why MyWebStack?
+
+| | MyWebStack | XAMPP |
+|---|---|---|
+| Portable (USB / any folder) | ✅ | ⚠️ |
+| No installer needed | ✅ | ❌ |
+| PHP version switching | ✅ (multiple side-by-side) | ❌ |
+| MySQL 8.4 | ✅ | ❌ |
+| PHP 8.5 | ✅ | ❌ |
+| Open source / contributable | ✅ | ❌ |
+
+---
+
+## 🚀 Quick Start
 
 ### Method 1: Pre-bundled Release (Fastest)
 
-1. 📦 [Download v0.1.1 ZIP (328 MB)](https://drive.usercontent.google.com/download?id=1h4IM7xBqtq-SrLYdu8ZhAxqefEhTQ7Sy&export=download)
-2. Extract the zip file to a location of C Drive
-3. Rename Folder to MyWebStack
-4. Run `start-stack.bat` to launch the stack
-5. Open your browser and navigate to [http://localhost](http://localhost)
+1. 📦 [Download the latest release ZIP](https://github.com/techiemithlesh/mywebstack/releases/latest)
+2. Extract to any folder (e.g. `C:\mywebstack`)
+3. Run `start-stack.bat`
+4. Open [http://localhost](http://localhost)
 
-That's it! Everything is pre-configured and ready to use.
+Done. Everything is pre-configured.
 
-### Method 2: Automated Setup
-
-If you prefer to build from source:
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/techiemithlesh/mywebstack.git
-   cd mywebstack
-   ```
-
-2. Run the automated setup script (requires PowerShell):
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File setup.ps1
-   ```
-   
-   This script will:
-   - Create all necessary directories
-   - Download and extract Apache, PHP, MySQL, and phpMyAdmin
-   - Apply configuration templates
-   - Create required symlinks
-   - Prepare the environment for use
-
-3. Start the stack:
-   ```bash
-   start-stack.bat
-   ```
-
-4. Open your browser and navigate to [http://localhost](http://localhost)
-
-### Method 3: Manual Setup
-
-#### 1. Clone the Repository
+### Method 2: Clone + Automated Setup
 
 ```bash
 git clone https://github.com/techiemithlesh/mywebstack.git
 cd mywebstack
 ```
 
-#### 2. Download Required Components
+Place the following packages in the `packages/` folder:
+- `Apache24.zip` — from [apachelounge.com](https://www.apachelounge.com/download/)
+- `mysql-8.4.zip` — from [dev.mysql.com](https://dev.mysql.com/downloads/mysql/)
+- `php-8.5.7-Win32-vs17-x64.zip` — from [windows.php.net](https://windows.php.net/download/)
+- `phpmyadmin/` folder — from [phpmyadmin.net](https://www.phpmyadmin.net/downloads/)
 
-Download and extract the following components:
+Then run:
 
-- [Apache for Windows](https://www.apachelounge.com/download/)
-- [PHP for Windows](https://windows.php.net/download/)
-- [MySQL ZIP Archive](https://dev.mysql.com/downloads/mysql/)
-- [(Optional) phpMyAdmin](https://www.phpmyadmin.net/downloads/)
+```powershell
+powershell -ExecutionPolicy Bypass -File setup.ps1
+start-stack.bat
+```
 
-#### 3. Setup Directory Structure
+### Method 3: Manual Setup
 
-Place the extracted components in the following directories:
+See [Manual Setup](#manual-setup) below.
+
+---
+
+## 📂 Directory Structure
 
 ```
 mywebstack/
-├── apache/         # Apache files (Apache24 folder)
-├── php/            # PHP files
-├── mysql/          # MySQL files
-├── phpmyadmin/     # phpMyAdmin files (optional)
-├── www/            # Your web projects go here
-├── templates/      # Configuration templates
-├── setup.ps1       # Automated setup script
-├── start-stack.bat # Script to start the stack
-└── stop-stack.bat  # Script to stop the stack
+├── apache/         Apache binaries (extracted by setup.ps1)
+├── php/            PHP binaries (extracted by setup.ps1)
+├── mysql/          MySQL binaries + data (extracted by setup.ps1)
+├── phpmyadmin/     phpMyAdmin (extracted by setup.ps1)
+├── packages/       Source ZIPs (you provide these)
+├── templates/      Config templates used by setup.ps1
+├── www/            Your web projects go here
+├── logs/           Stack-level logs
+├── setup.ps1       One-shot setup script
+├── start-stack.bat Launch all services
+└── stop-stack.bat  Stop all services
 ```
 
-#### 4. Configure the Stack
+Each project lives in its own subfolder under `www/` and is accessible at `http://localhost/<project-name>`.
 
-Copy and customize the configuration templates:
-
-1. Apache configuration:
-   ```
-   templates/apache-httpd.conf.example → apache/Apache24/conf/httpd.conf
-   ```
-
-2. PHP configuration:
-   ```
-   templates/php-php.ini.example → php/php.ini
-   ```
-
-3. MySQL configuration:
-   ```
-   templates/mysql-my.ini.example → mysql/my.ini
-   ```
-
-4. .htaccess file:
-   ```
-   templates/.htaccess → Place into each project folder inside www/
-   ```
-
-### 5. Start the Stack
-
-1. Run `start-stack.bat` to launch all services
-2. Open your browser and navigate to [http://localhost](http://localhost)
-3. Your web projects in the `www/` directory are now accessible
-
-### 6. Stop the Stack
-
-Run `stop-stack.bat` to safely shut down all services
-
-## 📂 Project Structure
-
-Each project should be placed in its own directory under the `www/` folder:
-
-```
-www/
-├── project1/
-│   ├── .htaccess
-│   ├── index.php
-│   └── ...
-├── project2/
-│   ├── .htaccess
-│   ├── index.php
-│   └── ...
-└── phpmyadmin/ (symlink to ../phpmyadmin created by setup.ps1)
-```
+---
 
 ## 🔧 Common Tasks
 
-### Accessing phpMyAdmin
+### phpMyAdmin
 
-phpMyAdmin is available at [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+URL: [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
-### Creating a New Database
+Default login: `root` / _(no password)_
 
-1. Open phpMyAdmin
-2. Click "New" in the left sidebar
-3. Enter a database name and click "Create"
+### Set a MySQL root password
 
-### Adding a New Project
-
-1. Create a new folder in the `www/` directory
-2. Copy the `.htaccess` file from `templates/` into your project folder
-3. Add your PHP files to the project folder
-4. Access your project at `http://localhost/your-project-folder`
-
-## 🧰 Features of Pre-bundled Release
-
-The [pre-bundled release](https://github.com/techiemithlesh/mywebstack/releases/tag/v0.1.1) comes with everything you need:
-
-- **Zero Configuration Required** - Just extract and run
-- **All Components Included**:
-  - Apache 2.4.57
-  - PHP 7.4.33
-  - MySQL 8.0.36
-  - phpMyAdmin 5.2.1
-- **Pre-configured Settings** - Optimized for development use
-- **Portable** - Can be moved to any location or USB drive
-- **Instant Web Development Environment** - No installation needed
-
-Simply download, extract, and start developing immediately!
-
-## 🛠️ About the Setup Script
-
-The `setup.ps1` PowerShell script automates the setup process with these features:
-
-- **Automatic Directory Creation**: Creates all necessary folders (apache, php, mysql, phpmyadmin, www, logs)
-- **Component Downloads**: Automatically downloads and extracts the latest compatible versions of:
-  - Apache 2.4.57 (VS17)
-  - PHP 7.4.33
-  - MySQL 8.0.36
-  - phpMyAdmin 5.2.1
-- **Configuration**: Copies template configuration files to their proper locations
-- **Symlink Creation**: Creates a symbolic link to phpMyAdmin in the www directory
-- **Smart Checks**: Only downloads components that aren't already present
-
-To run the script:
 ```powershell
-powershell -ExecutionPolicy Bypass -File setup.ps1
+$mysql = Get-ChildItem .\mysql -Recurse -Filter mysql.exe | Select-Object -First 1
+& $mysql.FullName -u root
 ```
 
-> **Note**: You may need to run PowerShell as Administrator for symlink creation to work properly.
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'YourPassword';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+### Add a new project
+
+1. Create `www\my-project\`
+2. Copy `templates\.htaccess` into it
+3. Add your PHP files
+4. Visit `http://localhost/my-project`
+
+### Stop the stack
+
+Run `stop-stack.bat` or close the console windows.
+
+---
+
+## Manual Setup
+
+<details>
+<summary>Expand manual setup instructions</summary>
+
+1. Clone or download the repository
+2. Download and extract each component into its folder:
+   - Apache → `apache/Apache24/`
+   - PHP → `php/<version>/`
+   - MySQL → `mysql/<version>/`
+   - phpMyAdmin → `phpmyadmin/`
+3. Copy template files and fill in your paths:
+   - `templates/apache-httpd.conf.example` → `apache/Apache24/conf/httpd.conf`
+   - `templates/php-php.ini.example` → `php/<version>/php.ini`
+   - `templates/mysql-my.ini.example` → `mysql/<version>/my.ini`
+4. Initialise MySQL: `mysqld --initialize-insecure`
+5. Run `start-stack.bat`
+
+</details>
+
+---
+
+## 🛠️ About setup.ps1
+
+The setup script is fully automated and idempotent (safe to run multiple times):
+
+- Extracts Apache, PHP, MySQL, phpMyAdmin from `packages/`
+- Writes config files with the correct absolute paths for your machine
+- Sets `MYWEBSTACK_HOME` environment variable
+- Adds Apache, PHP, and MySQL binaries to your user `PATH`
+- Creates the `www\phpmyadmin` junction
+- Initialises the MySQL data directory if it doesn't exist
+- Enables blank-password phpMyAdmin login for local development
+
+---
 
 ## 📝 Notes
 
-- This is a development stack and not recommended for production use
-- Default MySQL credentials: root (no password)
-- Remember to secure your installation if used on a public-facing network
+- **Development only** — do not expose this stack to the public internet without setting a MySQL password and locking down phpMyAdmin
+- Default MySQL credentials: `root` / _(no password)_
+- Ports: Apache on **80**, MySQL on **3306**
+- Port conflicts: ensure nothing else is using those ports before starting
+
+---
 
 ## 🔍 Troubleshooting
 
-- **Port conflicts**: Ensure ports 80 (Apache) and 3306 (MySQL) are available
-- **Service errors**: Check the respective log files in each service directory
-- **Permission issues**: Run the batch files as administrator if needed
+**Port already in use**
+Check with `netstat -ano | findstr :80` and kill the conflicting process.
+
+**setup.ps1 blocked by execution policy**
+Run: `powershell -ExecutionPolicy Bypass -File setup.ps1`
+
+**MySQL won't start**
+Check `mysql\<version>\data\*.err` for the error log.
+
+**Permission errors on symlink creation**
+Run the script from an elevated (Administrator) PowerShell prompt.
+
+---
+
+## 🤝 Contributing
+
+MyWebStack is open for contributions! We use a `development` branch as the integration point — all PRs should target `development`, not `main`.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide: branch strategy, commit conventions, PR checklist, and how to cut a release.
+
+Quick summary:
+```bash
+git checkout -b feature/your-feature development
+# ... make changes ...
+git push origin feature/your-feature
+# Open PR → base: development
+```
+
+---
+
+## 📋 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+---
 
 ## 📚 Resources
 
@@ -203,6 +203,8 @@ powershell -ExecutionPolicy Bypass -File setup.ps1
 - [PHP Documentation](https://www.php.net/docs.php)
 - [MySQL Documentation](https://dev.mysql.com/doc/)
 - [phpMyAdmin Documentation](https://www.phpmyadmin.net/docs/)
+
+---
 
 ## 📄 License
 

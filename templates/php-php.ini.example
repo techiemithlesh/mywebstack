@@ -1,7 +1,12 @@
 [PHP]
-extension_dir = "ext"
+extension_dir = "{{PHP_EXT_DIR}}"
 display_errors = On
 error_reporting = E_ALL
+memory_limit = 512M
+max_execution_time = 300
+max_input_time = 300
+post_max_size = 300M
+upload_max_filesize = 256M
 
 extension=mysqli
 extension=pdo_mysql

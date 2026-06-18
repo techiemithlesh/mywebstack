@@ -1,0 +1,11 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Laravel projects placed directly in www should serve from /public.
+    RewriteCond %{DOCUMENT_ROOT}/$1/artisan -f
+    RewriteCond %{DOCUMENT_ROOT}/$1/public -d
+    RewriteCond %{REQUEST_URI} !^/[^/]+/public(?:/|$)
+    RewriteRule ^([^/]+)(?:/(.*))?$ $1/public/$2 [L]
+</IfModule>

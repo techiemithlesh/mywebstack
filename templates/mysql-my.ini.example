@@ -1,6 +1,5 @@
 [mysqld]
 port=3306
-basedir="C:/MyWebStack/mysql"
-datadir="C:/MyWebStack/mysql/data"
-default_authentication_plugin=mysql_native_password
+basedir="{{MYSQL_ROOT}}"
+datadir="{{MYSQL_DATA}}"
 sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES

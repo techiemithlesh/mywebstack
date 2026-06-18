@@ -1,17 +1,27 @@
-ServerRoot "C:/MyWebStack/apache/Apache24"
+ServerRoot "{{APACHE_ROOT}}"
 Listen 80
 ServerName localhost
 
-DocumentRoot "C:/MyWebStack/www"
-<Directory "C:/MyWebStack/www">
+DocumentRoot "{{WWW_ROOT}}"
+<Directory "{{WWW_ROOT}}">
     Options Indexes FollowSymLinks
     AllowOverride All
     Require all granted
+    <FilesMatch "\.(php|php8|phtml)$">
+        SetHandler application/x-httpd-php
+    </FilesMatch>
 </Directory>
 
+LoadModule authz_core_module modules/mod_authz_core.so
+LoadModule authz_host_module modules/mod_authz_host.so
+LoadModule alias_module modules/mod_alias.so
+LoadModule dir_module modules/mod_dir.so
+LoadModule env_module modules/mod_env.so
+LoadModule headers_module modules/mod_headers.so
+LoadModule mime_module modules/mod_mime.so
 LoadModule rewrite_module modules/mod_rewrite.so
-LoadModule php7_module "C:/MyWebStack/php/php-7.4.3/php7apache2_4.dll"
-AddHandler application/x-httpd-php .php
-PHPIniDir "C:/MyWebStack/php/php-7.4.3"
+LoadModule {{PHP_APACHE_MODULE}} "{{PHP_APACHE_DLL}}"
+AddType application/x-httpd-php .php .php8 .phtml
+PHPIniDir "{{PHP_ROOT}}"
 
 DirectoryIndex index.php index.html
