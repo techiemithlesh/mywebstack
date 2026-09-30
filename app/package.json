@@ -1,0 +1,65 @@
+{
+  "name": "mywebstack-app",
+  "version": "1.0.0",
+  "description": "A minimal, modern web stack manager for Windows — Apache, PHP, MySQL",
+  "main": "main.js",
+  "author": "Mithlesh Patel <techie.mithlesh@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build:portable": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis",
+    "build": "electron-builder --win nsis portable"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.techiemithlesh.mywebstack",
+    "productName": "MyWebStack",
+    "copyright": "Copyright © 2025 Mithlesh Patel",
+    "asar": true,
+    "directories": {
+      "output": "../dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "renderer.js",
+      "assets/**"
+    ],
+    "extraFiles": [
+      { "from": "../setup.ps1",        "to": "setup.ps1" },
+      { "from": "../start-stack.ps1",  "to": "start-stack.ps1" },
+      { "from": "../start-stack.bat",  "to": "start-stack.bat" },
+      { "from": "../stop-stack.bat",   "to": "stop-stack.bat" },
+      { "from": "../templates",        "to": "templates" },
+      { "from": "../www",              "to": "www", "filter": ["**/.gitkeep"] }
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        { "target": "nsis",     "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": false,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MyWebStack",
+      "artifactName": "MyWebStack-Setup-${version}.exe",
+      "include": "installer.nsh"
+    },
+    "portable": {
+      "artifactName": "MyWebStack-Portable-${version}.exe",
+      "requestExecutionLevel": "user"
+    }
+  }
+}
