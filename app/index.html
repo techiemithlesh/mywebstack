@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+<title>MyWebStack</title>
+<style>
+/* ── Reset ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { cursor: pointer; font-family: inherit; border: none; }
+
+/* ── Design tokens ──────────────────────────────────────────────────── */
+:root {
+  --bg:          #0a0d14;
+  --bg2:         #0e1219;
+  --surface:     #141a26;
+  --surface2:    #1a2133;
+  --border:      #232c3e;
+  --border2:     #2e3a52;
+  --text:        #e2e8f4;
+  --text2:       #94a3bc;
+  --text3:       #5a6a84;
+  --accent:      #3b82f6;
+  --accent-dim:  rgba(59,130,246,0.12);
+  --accent-glow: rgba(59,130,246,0.25);
+  --green:       #22c55e;
+  --green-dim:   rgba(34,197,94,0.10);
+  --red:         #ef4444;
+  --red-dim:     rgba(239,68,68,0.10);
+  --amber:       #f59e0b;
+  --amber-dim:   rgba(245,158,11,0.10);
+  --purple:      #a855f7;
+  --radius-sm:   6px;
+  --radius:      10px;
+  --radius-lg:   14px;
+  --shadow:      0 4px 24px rgba(0,0,0,0.4);
+  --sidebar-w:   220px;
+  --titlebar-h:  44px;
+}
+
+html, body {
+  width: 940px; height: 640px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ── Title bar ──────────────────────────────────────────────────────── */
+#title-bar {
+  height: var(--titlebar-h);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 0 16px;
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.tb-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tb-logo {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #fff;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(59,130,246,0.4);
+}
+
+.tb-name {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.2px;
+}
+
+.tb-ver {
+  font-size: 10px;
+  color: var(--text3);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 1px 7px;
+  border-radius: 20px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.tb-actions {
+  display: flex;
+  gap: 2px;
+  -webkit-app-region: no-drag;
+}
+
+.tb-btn {
+  width: 32px; height: 32px;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text3);
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+}
+.tb-btn:hover { background: var(--surface2); color: var(--text); }
+.tb-btn.close:hover { background: var(--red); color: #fff; }
+
+/* ── Layout ─────────────────────────────────────────────────────────── */
+#shell {
+  display: flex;
+  height: calc(640px - var(--titlebar-h));
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────── */
+#sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 10px 0;
+}
+
+.nav-section {
+  padding: 0 10px;
+  margin-bottom: 4px;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 8px 6px 4px;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 8px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+.nav-btn:hover { background: var(--surface2); color: var(--text); }
+.nav-btn.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.nav-icon {
+  width: 18px;
+  height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.nav-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 10px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 0 10px 6px;
+}
+
+.quick-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.8px;
+  padding: 8px 6px 4px;
+}
+
+.quick-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text2);
+  font-size: 12px;
+  width: 100%;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+.quick-btn:hover { background: var(--surface2); color: var(--text); }
+.quick-btn .qi { font-size: 13px; width: 18px; flex-shrink: 0; }
+
+/* ── Setup banner ───────────────────────────────────────────────────── */
+#setup-banner {
+  margin: 8px 10px 0;
+  padding: 10px;
+  background: var(--amber-dim);
+  border: 1px solid var(--amber);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--amber);
+  line-height: 1.5;
+}
+#setup-banner strong { display: block; margin-bottom: 2px; }
+#btn-run-setup {
+  margin-top: 6px;
+  width: 100%;
+  padding: 4px 0;
+  background: var(--amber);
+  color: #000;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+#btn-run-setup:hover { opacity: 0.85; }
+
+/* ── Main area ──────────────────────────────────────────────────────── */
+#main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+#main::-webkit-scrollbar { width: 4px; }
+#main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ── Views ──────────────────────────────────────────────────────────── */
+.view { display: none; }
+.view.active { display: contents; }
+
+/* ── Section headers ────────────────────────────────────────────────── */
+.section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: 11px; font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.8px;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600;
+  padding: 6px 14px;
+  transition: opacity 0.15s, filter 0.15s;
+  white-space: nowrap;
+}
+.btn:hover  { filter: brightness(1.1); }
+.btn:active { filter: brightness(0.88); }
+.btn:disabled { opacity: 0.4; pointer-events: none; }
+
+.btn-primary { background: var(--accent);      color: #fff; }
+.btn-ghost   { background: var(--surface2);    color: var(--text); border: 1px solid var(--border2); }
+.btn-danger  { background: var(--red-dim);      color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+.btn-success { background: var(--green-dim);    color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+.btn-sm { padding: 5px 11px; font-size: 11px; }
+.btn-xs { padding: 3px 8px;  font-size: 11px; }
+
+/* ── Service cards ──────────────────────────────────────────────────── */
+.svc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.svc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.svc-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.25s;
+}
+.svc-card.running { border-color: rgba(34,197,94,0.3); }
+.svc-card.running::before { background: var(--green); }
+.svc-card.stopped::before { background: transparent; }
+
+.card-head {
+  display: flex; align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.svc-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 16px;
+  flex-shrink: 0;
+}
+.svc-icon.apache { background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%); color: #fff; }
+.svc-icon.mysql  { background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%); color: #fff; }
+
+.svc-meta { flex: 1; }
+.svc-name { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+.svc-desc { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* Status pill */
+.status-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px;
+  flex-shrink: 0;
+}
+.status-pill .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%; flex-shrink: 0;
+}
+.status-pill.running { background: var(--green-dim); color: var(--green); }
+.status-pill.running .dot { background: var(--green); box-shadow: 0 0 4px var(--green); animation: pulse 2s infinite; }
+.status-pill.stopped { background: var(--red-dim); color: var(--red); }
+.status-pill.stopped .dot { background: var(--red); }
+.status-pill.loading { background: var(--amber-dim); color: var(--amber); }
+.status-pill.loading .dot { background: var(--amber); animation: blink 0.7s infinite; }
+
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.15 } }
+
+.card-foot {
+  display: flex; gap: 8px;
+}
+.card-foot .btn { flex: 1; justify-content: center; }
+
+.btn-svc-start {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(34,197,94,0.2);
+}
+.btn-svc-start:hover { background: rgba(34,197,94,0.18); }
+.btn-svc-stop {
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.btn-svc-stop:hover { background: rgba(239,68,68,0.18); }
+
+/* ── Active PHP card ────────────────────────────────────────────────── */
+#active-php-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.php-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4f46e5 0%, #a855f7 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #fff;
+  flex-shrink: 0;
+}
+.php-name-big { font-size: 15px; font-weight: 700; }
+.php-sub-big  { font-size: 11px; color: var(--text3); }
+
+/* ── PHP version list ───────────────────────────────────────────────── */
+#php-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.php-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.php-row:hover { border-color: var(--border2); background: var(--surface2); }
+.php-row.active {
+  border-color: rgba(34,197,94,0.4);
+  background: var(--green-dim);
+  cursor: default;
+}
+.php-row.switching { opacity: 0.5; pointer-events: none; }
+
+.php-radio {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+.php-row.active .php-radio { border-color: var(--green); }
+.php-radio-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  display: none;
+}
+.php-row.active .php-radio-dot { display: block; }
+
+.php-icon-sm {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4f46e5 0%, #a855f7 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; color: #fff;
+  flex-shrink: 0;
+}
+
+.php-info { flex: 1; }
+.php-info-name { font-weight: 600; font-size: 13px; }
+.php-info-sub  { font-size: 11px; color: var(--text3); }
+
+.php-badge {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--green-dim);
+  color: var(--green);
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text3);
+  font-size: 12px;
+  background: var(--surface);
+  border: 1px dashed var(--border2);
+  border-radius: var(--radius);
+  line-height: 1.8;
+}
+
+/* ── Log viewer ─────────────────────────────────────────────────────── */
+.log-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.log-select {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 12px;
+  padding: 5px 10px;
+  outline: none;
+}
+
+#log-wrap {
+  background: #060a10;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#log-console {
+  padding: 12px 14px;
+  height: 380px;
+  overflow-y: auto;
+  font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--text2);
+}
+#log-console::-webkit-scrollbar { width: 4px; }
+#log-console::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.log-line { line-height: 1.8; white-space: pre-wrap; word-break: break-all; }
+.log-line.success { color: var(--green); }
+.log-line.error   { color: var(--red); }
+.log-line.warning { color: var(--amber); }
+.log-ts { color: var(--text3); margin-right: 8px; user-select: text; }
+.log-text { user-select: text; }
+
+/* ── Settings view ──────────────────────────────────────────────────── */
+.settings-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.settings-row:last-child { border-bottom: none; }
+
+.settings-label { flex: 1; }
+.settings-label strong { display: block; font-size: 13px; font-weight: 600; }
+.settings-label span   { font-size: 11px; color: var(--text3); }
+
+.settings-input {
+  width: 80px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+  text-align: center;
+}
+.settings-input:focus { border-color: var(--accent); }
+
+.toggle {
+  position: relative;
+  width: 38px; height: 22px;
+  flex-shrink: 0;
+}
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  background: var(--text3);
+  border-radius: 50%;
+  transition: left 0.2s, background 0.2s;
+}
+.toggle input:checked + .toggle-track { background: var(--accent-dim); border-color: var(--accent); }
+.toggle input:checked + .toggle-track + .toggle-thumb { left: 19px; background: var(--accent); }
+
+/* ── Toast ──────────────────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 10px 18px;
+  font-size: 12px; font-weight: 500;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  z-index: 9999;
+  max-width: 420px;
+  text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.error   { border-color: var(--red);   color: var(--red); }
+#toast.success { border-color: var(--green); color: var(--green); }
+#toast.warning { border-color: var(--amber); color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- ── Title bar ─────────────────────────────────────────────────────── -->
+<div id="title-bar">
+  <div class="tb-brand">
+    <div class="tb-logo">MW</div>
+    <span class="tb-name">MyWebStack</span>
+    <span class="tb-ver" id="app-version">v1.0.0</span>
+  </div>
+  <div class="tb-actions">
+    <button class="tb-btn" id="btn-minimize" title="Minimise">&#8211;</button>
+    <button class="tb-btn" id="btn-hide"     title="Hide to tray">&#9633;</button>
+    <button class="tb-btn close" id="btn-quit" title="Quit">&#10005;</button>
+  </div>
+</div>
+
+<div id="shell">
+
+  <!-- ── Sidebar ────────────────────────────────────────────────────── -->
+  <nav id="sidebar">
+    <div class="nav-section">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-btn active" data-view="dashboard" id="nav-dashboard">
+        <span class="nav-icon">⚡</span> Dashboard
+      </button>
+      <button class="nav-btn" data-view="php" id="nav-php">
+        <span class="nav-icon">🐘</span> PHP Versions
+      </button>
+      <button class="nav-btn" data-view="logs" id="nav-logs">
+        <span class="nav-icon">📋</span> Activity Log
+      </button>
+      <button class="nav-btn" data-view="settings" id="nav-settings">
+        <span class="nav-icon">⚙️</span> Settings
+      </button>
+    </div>
+
+    <div id="setup-banner" style="display:none">
+      <strong>⚠ Setup needed</strong>
+      Run setup.ps1 to install Apache, MySQL &amp; PHP.
+      <button id="btn-run-setup">Run Setup</button>
+    </div>
+
+    <div class="nav-divider"></div>
+
+    <div class="sidebar-footer">
+      <div class="quick-label">Quick Links</div>
+      <button class="quick-btn" id="ql-localhost">
+        <span class="qi">🌐</span> localhost
+      </button>
+      <button class="quick-btn" id="ql-phpmyadmin">
+        <span class="qi">🗄️</span> phpMyAdmin
+      </button>
+      <button class="quick-btn" id="ql-www">
+        <span class="qi">📁</span> www folder
+      </button>
+      <button class="quick-btn" id="ql-root">
+        <span class="qi">🗂️</span> Stack folder
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Main panel ─────────────────────────────────────────────────── -->
+  <div id="main">
+
+    <!-- Dashboard ──────────────────────────────────────────── -->
+    <div id="view-dashboard" class="view active">
+
+      <div>
+        <div class="section-hdr">
+          <span class="section-title">Services</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-success btn-sm" id="btn-start-all">▶&nbsp;Start All</button>
+            <button class="btn btn-danger  btn-sm" id="btn-stop-all">■&nbsp;Stop All</button>
+          </div>
+        </div>
+
+        <div class="svc-grid">
+          <!-- Apache card -->
+          <div class="svc-card stopped" id="card-apache">
+            <div class="card-head">
+              <div class="svc-icon apache">A</div>
+              <div class="svc-meta">
+                <div class="svc-name">Apache</div>
+                <div class="svc-desc" id="apache-port-label">HTTP Server · Port 80</div>
+              </div>
+              <div class="status-pill stopped" id="pill-apache">
+                <div class="dot"></div>
+                <span id="pill-apache-text">Checking</span>
+              </div>
+            </div>
+            <div class="card-foot">
+              <button class="btn btn-sm btn-svc-start" id="btn-start-apache">▶ Start</button>
+              <button class="btn btn-sm btn-svc-stop"  id="btn-stop-apache">■ Stop</button>
+            </div>
+          </div>
+
+          <!-- MySQL card -->
+          <div class="svc-card stopped" id="card-mysql">
+            <div class="card-head">
+              <div class="svc-icon mysql">M</div>
+              <div class="svc-meta">
+                <div class="svc-name">MySQL</div>
+                <div class="svc-desc" id="mysql-port-label">Database · Port 3306</div>
+              </div>
+              <div class="status-pill stopped" id="pill-mysql">
+                <div class="dot"></div>
+                <span id="pill-mysql-text">Checking</span>
+              </div>
+            </div>
+            <div class="card-foot">
+              <button class="btn btn-sm btn-svc-start" id="btn-start-mysql">▶ Start</button>
+              <button class="btn btn-sm btn-svc-stop"  id="btn-stop-mysql">■ Stop</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active PHP -->
+      <div>
+        <div class="section-hdr">
+          <span class="section-title">Active PHP</span>
+          <button class="btn btn-ghost btn-sm"
+                  onclick="showView('php', document.getElementById('nav-php'))">
+            Switch version →
+          </button>
+        </div>
+        <div id="active-php-card">
+          <div class="php-icon">PHP</div>
+          <div>
+            <div class="php-name-big" id="php-name">Detecting…</div>
+            <div class="php-sub-big"  id="php-sub">Loaded by Apache</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /dashboard -->
+
+    <!-- PHP Versions ───────────────────────────────────────── -->
+    <div id="view-php" class="view">
+      <div class="section-hdr">
+        <span class="section-title">PHP Versions</span>
+        <span style="font-size:11px;color:var(--text3)">
+          Click a version to switch · Apache restarts automatically
+        </span>
+      </div>
+      <div id="php-list">
+        <div class="empty-state">Scanning php/ directory…</div>
+      </div>
+    </div>
+
+    <!-- Activity Log ────────────────────────────────────────── -->
+    <div id="view-logs" class="view">
+      <div class="log-toolbar">
+        <span class="section-title" style="margin:0">Log Source</span>
+        <select class="log-select" id="log-source">
+          <option value="activity">Activity Log</option>
+          <option value="apache">Apache Error Log</option>
+          <option value="mysql">MySQL Error Log</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="btn-refresh-log">↻ Refresh</button>
+        <button class="btn btn-ghost btn-sm" id="btn-clear-log" style="margin-left:auto">Clear</button>
+      </div>
+      <div id="log-wrap">
+        <div id="log-console"></div>
+      </div>
+    </div>
+
+    <!-- Settings ───────────────────────────────────────────── -->
+    <div id="view-settings" class="view">
+      <div class="section-hdr" style="margin-bottom:16px">
+        <span class="section-title">Settings</span>
+      </div>
+
+      <div class="settings-group" style="margin-bottom:16px">
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong>Apache Port</strong>
+            <span>Port for the HTTP server</span>
+          </div>
+          <input type="number" class="settings-input" id="set-apache-port" min="1" max="65535" value="80">
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong>MySQL Port</strong>
+            <span>Port for the database server</span>
+          </div>
+          <input type="number" class="settings-input" id="set-mysql-port" min="1" max="65535" value="3306">
+        </div>
+      </div>
+
+      <div class="settings-group" style="margin-bottom:16px">
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong>Start minimised</strong>
+            <span>Launch directly to the system tray</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="set-start-minimized">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <strong>Auto-start services</strong>
+            <span>Start Apache &amp; MySQL when app launches</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="set-autostart">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btn-save-settings" style="width:100%;justify-content:center">
+        Save Settings
+      </button>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<div id="toast"></div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

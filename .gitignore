@@ -32,6 +32,14 @@ www/*/
 # Large binary packages (contributors download separately)
 packages/*.zip
 
+# GUI app build outputs
+app/node_modules/
+app/dist/
+dist/
+
+# Electron build cache
+app/.webpack/
+
 # OS / editor noise
 .DS_Store
 Thumbs.db
